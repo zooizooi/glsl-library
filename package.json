@@ -1,0 +1,9 @@
+{
+  "name": "@zooizooi/glsl-library",
+  "version": "0.0.1",
+  "description": "GLSL Library",
+  "author": "@zooizooi",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  }
+}
