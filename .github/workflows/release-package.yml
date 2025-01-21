@@ -1,21 +1,36 @@
-name: Publish package to GitHub Packages
+name: Create a release & publish package to GitHub Packages
 
 on:
-  release:
-    types: [created]
+  push:
+    tags:
+      - "v*.*.*"
 
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
       packages: write
-      contents: read
+      contents: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: 20
+          registry-url: https://npm.pkg.github.com/
+
       - name: Authenticate with GitHub Packages
         run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.AUTH_TOKEN_PACKAGE_READ }}" >> ~/.npmrc
-      - run: npm ci
-      - run: npm publish
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Publish package
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
